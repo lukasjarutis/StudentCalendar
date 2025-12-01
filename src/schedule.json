@@ -1,0 +1,16 @@
+{
+  "timetable": [
+    {
+      "date": "2025-11-24",
+      "row": 0,
+      "data": {
+        "subject": "test",
+        "type": "test",
+        "room": "206",
+        "teacher": "Aboba",
+        "notes": ""
+      }
+    }
+  ],
+  "recurring_lessons": []
+}
