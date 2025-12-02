@@ -1,54 +1,38 @@
-from PyQt5.QtWidgets import (
-    QDialog, QLineEdit, QLabel, QPushButton,
-    QVBoxLayout, QFormLayout, QHBoxLayout, QMessageBox
-)
-from PyQt5.QtCore import Qt
+from PySide6.QtWidgets import QDialog, QMessageBox, QLineEdit
+from src.window.ui_login_window import Ui_dialogLogin
+from src.window.main_window import MainWindow
 
 
-class LoginWindow(QDialog):
+class LoginWindow(QDialog, Ui_dialogLogin):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Prisijungimas")
-        self.resize(350, 180)
-        self.setModal(True)
+        self.setupUi(self)
 
-        self.username_edit = QLineEdit()
-        self.password_edit = QLineEdit()
-        self.password_edit.setEchoMode(QLineEdit.Password)
+        if isinstance(self.findChild(QLineEdit, "lineEditPassword"), QLineEdit):
+            self.lineEditPassword.setEchoMode(QLineEdit.EchoMode.Password)
 
-        form_layout = QFormLayout()
-        form_layout.addRow("Login:", self.username_edit)
-        form_layout.addRow("Password:", self.password_edit)
+        self.buttonLogin.clicked.connect(self.handle_login)
 
-        self.login_button = QPushButton("Sign up")
-        self.cancel_button = QPushButton("Cancel")
+        if hasattr(self, "buttonCancel"):
+            self.buttonCancel.clicked.connect(self.close)
 
-        self.login_button.clicked.connect(self.on_login)
-        self.cancel_button.clicked.connect(self.reject)
+        if hasattr(self, "labelError"):
+            self.labelError.setText("")
 
-        buttons_layout = QHBoxLayout()
-        buttons_layout.addStretch()
-        buttons_layout.addWidget(self.login_button)
-        buttons_layout.addWidget(self.cancel_button)
+    def handle_login(self):
+        username = self.lineEditUserName.text().strip()
+        password = self.lineEditUserPassword.text().strip()
 
-        main_layout = QVBoxLayout()
-        main_layout.addLayout(form_layout)
-        main_layout.addLayout(buttons_layout)
-
-        self.setLayout(main_layout)
-
-    def on_login(self):
-        username = self.username_edit.text().strip()
-        password = self.password_edit.text().strip()
-
-        if username == "" and password == "":
-            self.accept()
+        if username == "student" and password == "1234":
+            self.open_main_window()
         else:
-            QMessageBox.warning(
-                self,
-                "Error!",
-                "Wrong login or password.",
-                QMessageBox.Ok,
-                QMessageBox.Ok
-            )
+            if hasattr(self, "labelError"):
+                self.labelError.setText("Neteisingi prisijungimo duomenys")
+            else:
+                QMessageBox.warning(self, "Klaida", "Neteisingi prisijungimo duomenys")
+
+    def open_main_window(self):
+        self.main_window = MainWindow()
+        self.main_window.show()
+        self.close()

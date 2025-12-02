@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>dialogLogin</class>
+ <widget class="QDialog" name="dialogLogin">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>300</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QLabel" name="labelUsername">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>75</x>
+     <y>50</y>
+     <width>150</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="locale">
+    <locale language="Lithuanian" country="Lithuania"/>
+   </property>
+   <property name="text">
+    <string>Vartotojo vardas:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelUserPassword">
+   <property name="geometry">
+    <rect>
+     <x>75</x>
+     <y>110</y>
+     <width>150</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="locale">
+    <locale language="Lithuanian" country="Lithuania"/>
+   </property>
+   <property name="text">
+    <string>Slaptažodis:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEditUserName">
+   <property name="geometry">
+    <rect>
+     <x>75</x>
+     <y>70</y>
+     <width>150</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEditUserPassword">
+   <property name="geometry">
+    <rect>
+     <x>75</x>
+     <y>130</y>
+     <width>150</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="echoMode">
+    <enum>QLineEdit::Password</enum>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonLogin">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>200</y>
+     <width>80</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Prisijungti</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonCancel">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>200</y>
+     <width>80</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Atšaukti</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelError">
+   <property name="geometry">
+    <rect>
+     <x>75</x>
+     <y>170</y>
+     <width>150</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="locale">
+    <locale language="Lithuanian" country="Lithuania"/>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

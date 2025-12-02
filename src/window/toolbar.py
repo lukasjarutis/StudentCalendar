@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QLabel, QWidget
-from PyQt5.QtCore import Qt
+from PySide6.QtWidgets import QHBoxLayout, QPushButton, QLabel, QWidget
+from PySide6.QtCore import Qt
 
 
 def create_toolbar(window):

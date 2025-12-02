@@ -1,9 +1,8 @@
-from PyQt5.QtWidgets import (
+from PySide6.QtWidgets import (
     QDialog, QLineEdit, QTextEdit, QFormLayout,
     QPushButton, QHBoxLayout, QVBoxLayout,
-    QLabel, QCheckBox, QGroupBox, QGridLayout, QComboBox
-)
-from PyQt5.QtCore import Qt
+    QLabel, QCheckBox, QGroupBox, QGridLayout, QComboBox)
+from PySide6.QtCore import Qt
 
 
 class LessonDialog(QDialog):

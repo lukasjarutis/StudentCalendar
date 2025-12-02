@@ -1,27 +1,32 @@
 from datetime import date, timedelta
 
-from PyQt5.QtWidgets import (
-    QMainWindow, QWidget, QVBoxLayout, QLabel,
-    QTableWidget, QTableWidgetItem, QHeaderView,
-    QFileDialog, QMessageBox, QAction
+from PySide6.QtWidgets import (
+    QMainWindow, QTableWidgetItem, QFileDialog, QMessageBox, QHeaderView
 )
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QGuiApplication, QColor
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QAction, QGuiApplication, QColor
 
+from src.window.ui_main_window import Ui_MainWindow
 from src.window.dialogs import LessonDialog, GlobalSubjectDialog
 from src.window.schedule_modul import ScheduleModel
 from src.config import TIME_SLOTS, DAY_NAMES, DEFAULT_FILENAME
 from src.utils import format_lesson_text
 from src.storage import save_schedule, load_schedule
-from src.window.toolbar import create_toolbar
 
 
-class MainWindow(QMainWindow):
+class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
 
+        self.setupUi(self)
+
         self.setWindowTitle("Studento kalendorius")
         self.default_filename = DEFAULT_FILENAME
+
+        self.model = ScheduleModel()
+
+        self.time_slots = TIME_SLOTS
+        self.day_names = DAY_NAMES
 
         screen = QGuiApplication.primaryScreen()
         available = screen.availableGeometry()
@@ -30,32 +35,19 @@ class MainWindow(QMainWindow):
         self.setMinimumSize(1200, 700)
         self.resize(width, height)
 
-        self.model = ScheduleModel()
-
-        self.time_slots = TIME_SLOTS
-        self.day_names = DAY_NAMES
-
         today = date.today()
         self.current_monday = today - timedelta(days=today.weekday())
 
-        self.create_menus()
+        self.pushBtnAddSub.clicked.connect(self.add_subject_globally)
+        self.pushBtnPrevWeek.clicked.connect(lambda: self.change_week(-1))
+        self.pushBtnNextWeek.clicked.connect(lambda: self.change_week(1))
 
-        central_widget = QWidget()
-        self.main_layout = QVBoxLayout(central_widget)
-        self.main_layout.setContentsMargins(0, 0, 0, 0)
-
-        title_label = QLabel("Savaitės tvarkaraštis")
-        title_label.setAlignment(Qt.AlignCenter)
-        title_label.setStyleSheet("font-size: 18px; font-weight: bold;")
-        self.main_layout.addWidget(title_label)
-
-        toolbar_layout = create_toolbar(self)
-        self.main_layout.addLayout(toolbar_layout)
+        if hasattr(self, "actionSave") and isinstance(self.actionSave, QAction):
+            self.actionSave.triggered.connect(self.save_to_file_dialog)
+        if hasattr(self, "actionLoad") and isinstance(self.actionLoad, QAction):
+            self.actionLoad.triggered.connect(self.load_from_file_dialog)
 
         self.setup_table()
-        self.main_layout.addWidget(self.table)
-
-        self.setCentralWidget(central_widget)
 
         try:
             load_schedule(self.default_filename, self.model)
@@ -66,29 +58,21 @@ class MainWindow(QMainWindow):
 
         self.update_week_view()
 
-    def create_menus(self):
-        menubar = self.menuBar()
-        file_menu = menubar.addMenu("Failas")
-
-        save_action = QAction("Išsaugoti...", self)
-        save_action.triggered.connect(self.save_to_file_dialog)
-        file_menu.addAction(save_action)
-
-        load_action = QAction("Atidaryti...", self)
-        load_action.triggered.connect(self.load_from_file_dialog)
-        file_menu.addAction(load_action)
-
     def setup_table(self):
-        self.table = QTableWidget(len(self.time_slots), len(self.day_names), self)
-        self.table.setVerticalHeaderLabels(self.time_slots)
+        table = self.tableSchedule
 
-        header_h = self.table.horizontalHeader()
-        header_v = self.table.verticalHeader()
+        table.setRowCount(len(self.time_slots))
+        table.setColumnCount(len(self.day_names))
+
+        table.setVerticalHeaderLabels(self.time_slots)
+
+        header_h = table.horizontalHeader()
+        header_v = table.verticalHeader()
         header_h.setSectionResizeMode(QHeaderView.Stretch)
         header_v.setSectionResizeMode(QHeaderView.Stretch)
 
-        self.table.setWordWrap(True)
-        self.table.cellDoubleClicked.connect(self.edit_lesson)
+        table.setWordWrap(True)
+        table.cellDoubleClicked.connect(self.edit_lesson)
 
     def change_week(self, delta_weeks: int):
         self.current_monday += timedelta(weeks=delta_weeks)
@@ -118,16 +102,16 @@ class MainWindow(QMainWindow):
 
         week_start = self.week_dates[0]
         week_end = self.week_dates[-1]
-        self.week_label.setText(
-            f"Savaitė: {week_start.strftime('%Y-%m-%d')} – {week_end.strftime('%Y-%m-%d')}"
+        self.labelCurrentWeek.setText(
+            f"{week_start.strftime('%Y-%m-%d')} – {week_end.strftime('%Y-%m-%d')}"
         )
 
         headers = []
         for day_name, d in zip(self.day_names, self.week_dates):
             headers.append(f"{day_name}\n{d.strftime('%Y-%m-%d')}")
-        self.table.setHorizontalHeaderLabels(headers)
+        self.tableSchedule.setHorizontalHeaderLabels(headers)
 
-        self.table.clearContents()
+        self.tableSchedule.clearContents()
 
         grid = self.model.build_week_cells(
             self.current_monday,
@@ -142,7 +126,7 @@ class MainWindow(QMainWindow):
                     continue
 
                 item = self._make_item_from_data(data)
-                self.table.setItem(row, col, item)
+                self.tableSchedule.setItem(row, col, item)
 
     def edit_lesson(self, row, column):
         day_date = self.week_dates[column]
@@ -153,30 +137,30 @@ class MainWindow(QMainWindow):
         dialog = LessonDialog(
             self,
             subject=existing.get("subject", ""),
-            lesson_type=existing.get("type", ""),
             room=existing.get("room", ""),
             teacher=existing.get("teacher", ""),
             notes=existing.get("notes", ""),
+            lesson_type=existing.get("type", ""),
             exam=existing.get("exam", False),
         )
 
-        if dialog.exec_() == dialog.Accepted:
+        if dialog.exec() == dialog.Accepted:
             data = dialog.get_data()
 
             if not data["subject"]:
                 self.model.remove_single_lesson(iso, row)
-                self.table.setItem(row, column, QTableWidgetItem(""))
+                self.tableSchedule.setItem(row, column, QTableWidgetItem(""))
                 return
 
             self.model.set_single_lesson(iso, row, data)
 
             item = self._make_item_from_data(data)
-            self.table.setItem(row, column, item)
+            self.tableSchedule.setItem(row, column, item)
 
     def add_subject_globally(self):
         dialog = GlobalSubjectDialog(self, self.day_names, self.time_slots)
 
-        if dialog.exec_() == dialog.Accepted:
+        if dialog.exec() == dialog.Accepted:
             data = dialog.get_data()
 
             subject = data["subject"]
