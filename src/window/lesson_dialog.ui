@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LessonDialog</class>
+ <widget class="QDialog" name="LessonDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Paskaitos redagavimas</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QFormLayout" name="formLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Dalykas:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="subjectEdit"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Tipas:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Auditorija:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Dėstytojas:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Pastabos:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Įskaita / egzaminas:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="typeEdit"/>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="roomEdit"/>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="teacherEdit"/>
+        </item>
+        <item row="4" column="1">
+         <widget class="QTextEdit" name="notesEdit"/>
+        </item>
+        <item row="5" column="1">
+         <widget class="QCheckBox" name="examCheckBox">
+          <property name="text">
+           <string>Taip</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="widget_2" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="buttonOk">
+        <property name="text">
+         <string>Išsaugoti</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="buttonCancel">
+        <property name="text">
+         <string>Atšaukti</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 
 from PySide6.QtWidgets import (
-    QMainWindow, QTableWidgetItem, QFileDialog, QMessageBox, QHeaderView
+    QMainWindow, QTableWidgetItem, QFileDialog, QMessageBox, QHeaderView, QDialog
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QAction, QGuiApplication, QColor
@@ -144,8 +144,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             exam=existing.get("exam", False),
         )
 
-        if dialog.exec() == dialog.Accepted:
+        if dialog.exec() == QDialog.Accepted:
             data = dialog.get_data()
+
+            print("DEBUG LESSON DATA:", data)
 
             if not data["subject"]:
                 self.model.remove_single_lesson(iso, row)
@@ -160,7 +162,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def add_subject_globally(self):
         dialog = GlobalSubjectDialog(self, self.day_names, self.time_slots)
 
-        if dialog.exec() == dialog.Accepted:
+        if dialog.exec() == QDialog.Accepted:
             data = dialog.get_data()
 
             subject = data["subject"]
