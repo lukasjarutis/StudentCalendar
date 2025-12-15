@@ -4,6 +4,7 @@ from pathlib import Path
 from PySide6.QtWidgets import QDialog, QMessageBox, QLineEdit
 from src.window.ui_login_window import Ui_dialogLogin
 from src.window.main_window import MainWindow
+from src.window.register_window import RegisterWindow
 
 
 class LoginWindow(QDialog, Ui_dialogLogin):
@@ -16,14 +17,9 @@ class LoginWindow(QDialog, Ui_dialogLogin):
 
         if isinstance(self.findChild(QLineEdit, "lineEditUserPassword"), QLineEdit):
             self.lineEditUserPassword.setEchoMode(QLineEdit.EchoMode.Password)
-        if isinstance(self.findChild(QLineEdit, "lineEditRegisterPassword"), QLineEdit):
-            self.lineEditRegisterPassword.setEchoMode(QLineEdit.EchoMode.Password)
-        if isinstance(self.findChild(QLineEdit, "lineEditConfirmPassword"), QLineEdit):
-            self.lineEditConfirmPassword.setEchoMode(QLineEdit.EchoMode.Password)
-
         self.buttonLogin.clicked.connect(self.handle_login)
-        if hasattr(self, "buttonRegister"):
-            self.buttonRegister.clicked.connect(self.handle_register)
+        if hasattr(self, "buttonOpenRegister"):
+            self.buttonOpenRegister.clicked.connect(self.open_register_window)
 
         if hasattr(self, "buttonCancel"):
             self.buttonCancel.clicked.connect(self.close)
@@ -44,32 +40,14 @@ class LoginWindow(QDialog, Ui_dialogLogin):
         else:
             self.show_error("Neteisingi prisijungimo duomenys")
 
-    def handle_register(self):
-        username = self.lineEditRegisterUserName.text().strip()
-        password = self.lineEditRegisterPassword.text().strip()
-        confirm_password = self.lineEditConfirmPassword.text().strip()
+    def open_register_window(self):
+        self.register_window = RegisterWindow(self.user_file, self)
+        self.register_window.registration_successful.connect(self.show_registration_success)
+        self.register_window.exec()
 
-        if not username or not password or not confirm_password:
-            self.show_error("Užpildykite visus registracijos laukus")
-            return
-
-        if password != confirm_password:
-            self.show_error("Slaptažodžiai nesutampa")
-            return
-
-        users = self.load_users()
-        if username in users:
-            self.show_error("Toks vartotojas jau egzistuoja")
-            return
-
-        users[username] = password
-        self.save_users(users)
+    def show_registration_success(self, username: str):
         if hasattr(self, "labelError"):
-            self.labelError.setText("Vartotojas sėkmingai užregistruotas")
-        QMessageBox.information(self, "Sėkmė", "Vartotojas sėkmingai užregistruotas")
-        self.lineEditRegisterUserName.clear()
-        self.lineEditRegisterPassword.clear()
-        self.lineEditConfirmPassword.clear()
+            self.labelError.setText(f"Vartotojas '{username}' sėkmingai užregistruotas")
 
     def open_main_window(self):
         self.main_window = MainWindow()
